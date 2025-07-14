@@ -1,12 +1,12 @@
 # 🤖 AI 聊天助手
 
-一個基於 Streamlit 和 OpenAI GPT-4o 的智能聊天機器人應用，支援文件上傳和多模態對話。
+一個基於 Streamlit 和 Azure OpenAI GPT-4o 的智能聊天機器人應用，支援文件上傳和多模態對話。
 
 ## 功能特色
 
 - 💬 即時聊天界面
 - 📁 **文件上傳支援** - 圖片、PDF、Word文檔、文字文件
-- 🤖 **GPT-4o 模型** - 支援文字和圖片分析
+- 🤖 **GPT-4o 模型**（Azure OpenAI）- 支援文字和圖片分析
 - ⚙️ 可調整的模型參數 (溫度、最大token數)
 - 📱 響應式設計
 - 🔄 流式回應顯示
@@ -32,17 +32,18 @@
 pip install -r requirements.txt
 ```
 
-### 2. 設置 OpenAI API Key
+### 2. 設置 Azure OpenAI 參數
 
-創建 `.env` 文件並添加你的 OpenAI API Key：
+請在 `config.py` 中填入你的 Azure OpenAI 相關資訊，或於 `.env` 設定下列參數：
 
-```bash
-# 複製範例文件
-cp env_example.txt .env
-
-# 編輯 .env 文件，替換為你的 API Key
-OPENAI_API_KEY=your_actual_openai_api_key_here
+```env
+AZURE_OPENAI_API_KEY=your_azure_openai_api_key
+AZURE_OPENAI_ENDPOINT=https://your-resource-name.openai.azure.com/
+AZURE_OPENAI_DEPLOYMENT_NAME=your-deployment-name
+AZURE_OPENAI_API_VERSION=2024-02-15-preview
 ```
+
+> 你也可以直接在 `config.py` 編輯這些參數。
 
 ### 3. 運行應用
 
@@ -71,7 +72,7 @@ streamlit run app.py --server.port 8566
 - 設置最大回應長度
 - 清除聊天記錄
 
-## GPT-4o 模型特色
+## GPT-4o (Azure OpenAI) 模型特色
 
 - **多模態能力**：同時支援文字和圖片分析
 - **強大推理**：更準確的邏輯推理和問題解決
@@ -80,33 +81,33 @@ streamlit run app.py --server.port 8566
 
 ## 環境變數
 
-| 變數名 | 說明 | 預設值 |
-|--------|------|--------|
-| `OPENAI_API_KEY` | OpenAI API Key (必需) | - |
-| `OPENAI_MODEL` | 使用的模型 | `gpt-4o` |
-| `OPENAI_MAX_TOKENS` | 最大回應長度 | `1000` |
-| `OPENAI_TEMPERATURE` | 創意度 | `0.7` |
+| 變數名 | 說明 | 必需 | 範例 |
+|--------|------|------|------|
+| `AZURE_OPENAI_API_KEY` | Azure OpenAI API Key | ✅ | `xxxxxxx` |
+| `AZURE_OPENAI_ENDPOINT` | Azure OpenAI 端點 | ✅ | `https://your-resource-name.openai.azure.com/` |
+| `AZURE_OPENAI_DEPLOYMENT_NAME` | Azure OpenAI 部署名稱 | ✅ | `gpt-4o` |
+| `AZURE_OPENAI_API_VERSION` | API 版本 | ✅ | `2024-02-15-preview` |
 
 ## 使用範例
 
 ### 圖片分析
 1. 上傳一張圖片
-2. 問："這張圖片裡有什麼？"
+2. 問：「這張圖片裡有什麼？」
 3. AI 會描述圖片內容
 
 ### 文檔分析
 1. 上傳 PDF 或 Word 文檔
-2. 問："這份文檔的主要內容是什麼？"
+2. 問：「這份文檔的主要內容是什麼？」
 3. AI 會總結文檔重點
 
 ### 多文件分析
 1. 上傳多個相關文件
-2. 問："這些文件之間有什麼關聯？"
+2. 問：「這些文件之間有什麼關聯？」
 3. AI 會分析文件間的關係
 
 ## 注意事項
 
-- 確保你有有效的 OpenAI API Key
+- 請確保你有有效的 Azure OpenAI API Key 與正確的 Endpoint、Deployment Name
 - API 調用會產生費用，請注意使用量
 - 大文件處理可能需要較長時間
 - 建議在生產環境中設置適當的速率限制
@@ -116,9 +117,9 @@ streamlit run app.py --server.port 8566
 
 ### 常見問題
 
-1. **API Key 錯誤**
-   - 檢查 `.env` 文件中的 API Key 是否正確
-   - 確保 API Key 有足夠的額度
+1. **API Key 或 Endpoint 錯誤**
+   - 檢查 `config.py` 或 `.env` 中的參數是否正確
+   - 確保 API Key 有足夠的權限
 
 2. **文件上傳失敗**
    - 檢查文件格式是否支援
@@ -127,20 +128,20 @@ streamlit run app.py --server.port 8566
 
 3. **圖片分析失敗**
    - 檢查圖片格式是否支援
-   - 確認 API Key 有權限使用 GPT-4o
+   - 確認 Azure OpenAI 部署支援多模態
 
 4. **連接錯誤**
    - 檢查網路連接
-   - 確認 OpenAI API 服務狀態
+   - 確認 Azure OpenAI 服務狀態
 
 ## 技術架構
 
 - **前端**: Streamlit
 - **後端**: Python
-- **AI 服務**: OpenAI GPT-4o
+- **AI 服務**: Azure OpenAI GPT-4o
 - **文件處理**: PIL, PyPDF2, python-docx
 - **配置管理**: python-dotenv
 
 ## 授權
 
-MIT License 
+MIT License

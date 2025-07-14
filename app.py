@@ -12,17 +12,19 @@ st.set_page_config(
     layout="wide"
 )
 
-# 初始化 OpenAI 客戶端
-if OPENAI_API_KEY:
+# 初始化 Azure OpenAI 客戶端
+if AZURE_OPENAI_API_KEY:
     try:
-        client = openai.OpenAI(api_key=OPENAI_API_KEY)
-    except TypeError as e:
-        if "proxies" in str(e):
-            client = openai.OpenAI(api_key=OPENAI_API_KEY)
-        else:
-            raise e
+        client = openai.AzureOpenAI(
+            api_key=AZURE_OPENAI_API_KEY,
+            api_version=AZURE_OPENAI_API_VERSION,
+            azure_endpoint=AZURE_OPENAI_ENDPOINT
+        )
+    except Exception as e:
+        st.error(f"⚠️ Azure OpenAI 初始化失敗: {str(e)}")
+        st.stop()
 else:
-    st.error("⚠️ 請設置 OPENAI_API_KEY 環境變數")
+    st.error("⚠️ 請設置 AZURE_OPENAI_API_KEY 相關環境變數")
     st.stop()
 
 # 初始化會話狀態
@@ -81,7 +83,6 @@ with st.sidebar:
     
     st.markdown("---")
     st.markdown("### 🤖 模型信息")
-    st.markdown(f"**當前模型**: {OPENAI_MODEL}")
     st.markdown("GPT-4o 支援文字和圖片分析")
 
 # 文件上傳區域
@@ -206,7 +207,7 @@ if prompt := st.chat_input("輸入你的問題..."):
                 if msg["role"] != "system":
                     messages.append({"role": msg["role"], "content": msg["content"]})
             response = client.chat.completions.create(
-                model=OPENAI_MODEL,
+                deployment_id=AZURE_OPENAI_DEPLOYMENT_NAME,
                 messages=messages,
                 temperature=temperature,
                 max_tokens=max_tokens,
